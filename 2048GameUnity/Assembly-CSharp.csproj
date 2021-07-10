@@ -58,7 +58,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\GridManager.cs" />
     <Compile Include="Assets\Scripts\BlockScript.cs" />
-    <Compile Include="Assets\Scripts\CharacterMovementAndInteractionSCript.cs" />
+    <Compile Include="Assets\Scripts\CharacterMovementAndInteractionScript.cs" />
+    <Compile Include="Assets\Scripts\SpawnerChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

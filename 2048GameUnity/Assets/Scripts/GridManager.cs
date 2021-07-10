@@ -13,25 +13,44 @@ public class GridManager : MonoBehaviour
     public int startingBlocksNum;
     public GameObject prefab;
     public GameObject Spawners;
-    private List<Transform> SpawnPoints;
+    public float countPlayerCollision;
+    public int threshold;
+    private List<Vector3> SpawnPoints = new List<Vector3>();
+
     // Start is called before the first frame update
     void Start()
     {
+        threshold = 10000000;
+        countPlayerCollision = 0;
         foreach (Transform spawn in Spawners.GetComponentInChildren<Transform>())
         {
-            for(int i = 0; i <SpawnPoints.Count; i ++)
-            {
-                SpawnPoints[i] = spawn;
-            }
-
+            SpawnPoints.Add(spawn.position);
+        }
+        foreach (Transform child in Spawners.GetComponentInChildren<Transform>())
+        {
+            GameObject.Destroy(child.gameObject);
         }
         startingBlocksNum = 2;
         List<int> blockSpawnAlreadyUsed = new List<int>();
-        for(int i = 0; i <startingBlocksNum; i++)
+        bool shouldPlace = true;
+        int num = Random.Range(0, SpawnPoints.Count - 1);
+        for (int i = 0; i < startingBlocksNum; i++)
         {
-            int num = Random.Range(0, SpawnPoints.Count);
             blockSpawnAlreadyUsed.Add(num);
-
+            if (shouldPlace)
+            {
+                Instantiate(prefab, SpawnPoints[num], Quaternion.identity);
+                Debug.Log(num);
+            }
+            num = Random.Range(0, SpawnPoints.Count - 1);
+            for (int j = 0; j < blockSpawnAlreadyUsed.Count; j++)
+            {
+                if (num == blockSpawnAlreadyUsed[j])
+                {
+                    shouldPlace = false;
+                    break;
+                }
+            }
         }
 
     }
@@ -39,11 +58,19 @@ public class GridManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        countPlayerCollision += (1 * Time.deltaTime);
+        if (countPlayerCollision > (threshold * Time.deltaTime))
+        {
+            countPlayerCollision = 0;
 
+            SpawnAtARandomSpawnPoint();
+        }
     }
-
     public void SpawnAtARandomSpawnPoint()
     {
-
+        int num = Random.Range(0, SpawnPoints.Count - 1);
+        Instantiate(prefab, SpawnPoints[num], Quaternion.identity);
+        Debug.Log(num);
     }
+
 }
